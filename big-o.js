@@ -22,4 +22,4 @@
 // invoking appendToNew, which is also a linear operation since it's iterating over
 // the input.
 
-// VI.10 n/10 ***
+// VI.10 n/10 *** (log n ??)
