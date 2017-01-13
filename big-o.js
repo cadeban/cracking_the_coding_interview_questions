@@ -19,7 +19,17 @@
 // VI.8 linear?
 
 // VI.9 Quadratic, because for each item in the array passed to copyArray, we're
-// invoking appendToNew, which is also a linear operation since it's iterating over
-// the input.
+//  invoking appendToNew, which is also a linear operation since it's iterating over
+//  the input.
 
 // VI.10 n/10 *** (log n ??)
+
+// VI.11 Polynomial, because we're . kc^k ***
+
+// VI.12 b log b + a log b. Merge sorting on b is an n log n operation, because
+//  we're dividing the array in half each time, and then we're merging halves
+//  back together. Then we're looping over our a array (that's where the a in a
+//  log b comes from) and performing a binary search on our b array, so we're
+//  halving where we need to search in b each time (the 'log b' in 'a log b').
+//
+//   Question for Dan: When do we add Big O together?
