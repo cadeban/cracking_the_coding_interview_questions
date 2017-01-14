@@ -32,7 +32,29 @@
     }
 
 /*
-  2.2  Return Kth to Last
+  2.2  Return Kth to Last:
+  Implement an algorithm to find the kth to last element of a singly linked list.
+*/
+
+  // Questions: Singly linked list or Doubly linked list?
+
+  // function returnKth(linkedListNode) {
+    // set current to linkedListNode.head
+    // set counter to 0
+    // loop through linked list while current.next !== null
+      // increment counter
+    // loop through linked list
+  // }
+
+  // function returnKth(linkedListNode) {
+    // set current to linkedListNode.head
+    // set counter to 0
+    // loop through linked list while current.next !== null
+      // increment counter
+    // loop through linked list
+  // }
+
+/* 2.3 Delete Middle Node:
   Implement an algorithm to delete a node in the middle (ie. any node but the
   first and last, not necessarily the exact middle) of a singly linked list,
   given only access to that node.
@@ -42,12 +64,6 @@
     Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
 */
 
-  // Questions: Singly linked list or Doubly linked list?
-
-// function returnKth(linkedListNode) {
-  //
-  //
-// }
 
 /*
   2.3 Partition:
