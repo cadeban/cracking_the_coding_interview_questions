@@ -42,10 +42,15 @@
     Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
 */
 
-//
+  // Questions: Singly linked list or Doubly linked list?
+
+// function returnKth(linkedListNode) {
+  //
+  //
+// }
 
 /*
-  2.4 Partition:
+  2.3 Partition:
   Write code to partition a linked list around a value x, such that all nodes
   less than x come before all nodes greater than or equal to x. If x is
   contained within the list, the values of x only need to be right after the
@@ -59,7 +64,7 @@
  */
 
 /*
-  2.5 Sum Lists:
+  2.4 Sum Lists:
   You have two numbers represented by a linked list, where each node contains a
   single digit. The digitis are stored in reverse order, such that the 1's digit
   is at the head of the list. Write a function that adds the two numbers and
@@ -74,11 +79,11 @@
    Output: 9 -> 1 -> 2. That is, 912
 */
 
-// 2.6 Palindrome: Implement a function to check if a linked list is a palindrome.
+// 2.5 Palindrome: Implement a function to check if a linked list is a palindrome.
 //
 
 /*
-  2.7 Intersection:
+  2.6 Intersection:
   Given two (singly) linked lists, determine if the two lists intersect. Return
   the intersecting node. Note that the intersection is defined based on
   reference, not value. That is, if the kth node of the firstlinked list is the
@@ -87,8 +92,8 @@
 */
 
 /*
-  2.8 Loop Detection:
-  Given a circular linked list, implement an algoritm that returns the node at
+  2.7 Loop Detection:
+  Given a circular linked list, implement an algorithm that returns the node at
   the beginning of the loop.
 
   Definition: Circular linked list in which a node's next pointer points to an
@@ -97,4 +102,18 @@
   Example:
    Input: A -> B -> C -> D -> E -> C (same C as before)
    Output: C
+
+  // function loopDetection(linkedList) {
+    // set first to linkedList's head
+    // set second to linkedList's head
+    // while first.next !== null
+      // while second.next !== null
+        // if first === second
+          // return false
+        // second = second.next.next
+      // first = first.next
+    // return true
+  // }
+}
+
 */
