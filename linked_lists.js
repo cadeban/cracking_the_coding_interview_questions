@@ -109,10 +109,10 @@
     // while first.next !== null
       // while second.next !== null
         // if first === second
-          // return false
+          // return second;
         // second = second.next.next
       // first = first.next
-    // return true
+    // return false;
   // }
 }
 
