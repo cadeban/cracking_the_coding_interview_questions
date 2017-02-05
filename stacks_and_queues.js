@@ -26,6 +26,10 @@ Stack.prototype = {
   Describe how you could use a single array to implement three stacks.
 */
 
+function ThreeStacks() {
+
+}
+
 /* 3.2 Stack Min:
   How would you design a stack which, in addition to push and pop, has a function which returns the minimum element? Push, pop, and min should all operate in O(1) time.
 */
@@ -120,3 +124,29 @@ SetOfStacks.prototype = {
     return topOfIndex;
   }
 };
+
+/**
+ * 3.4 Queue Stack
+ */
+
+ function QueueStack () {
+   this._firstStack = new Stack();
+   this._secondStack = new Stack();
+ }
+
+ QueueStack.prototype = {
+   enqueue: function(value) {
+     this._firstStack.push(value);
+   },
+   dequeue: function() {
+     if (this._firstStack.isEmpty && this._secondStack.isEmpty()) {
+       throw Error;
+     }
+     if (this._secondStack.isEmpty()) {
+       while (!this._firstStack.isEmpty()) {
+         this._secondStack.push(this._firstStack.pop());
+       }
+     }
+     return this._secondStack.pop();
+   }
+ };
