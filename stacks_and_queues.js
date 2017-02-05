@@ -150,3 +150,44 @@ SetOfStacks.prototype = {
      return this._secondStack.pop();
    }
  };
+
+/*
+  3.5 Sort Stack
+  Write a program to sort a stack such hat the smallest items are on the top.
+  You can use an additional temporary stack, but you may not copy the elements
+  into any other data structure (such as an array). The stack supports the
+  following operations: push, pop, peek, and isEmpty.
+ */
+ function sortStack( stack ) {
+   if ( stack.isEmpty() ) {
+     return null;
+   }
+   var tempStack = new Stack();
+   var currentTop = stack.pop();
+
+   while ( !stack.isEmpty() ) {
+     var currentTop = stack.pop();
+     while ( tempStack.peek() > currentTop ) {
+       stack.push( tempStack.pop() );
+     }
+     tempStack.push( currentTop );
+   }
+
+   while ( !tempStack.isEmpty() ) {
+     stack.push( tempStack.pop() );
+   }
+
+   return stack;
+ }
+
+/*
+  3.6 Animal Shelter
+  An animal shelter, which holds only dogs and cats, operates on a stictly
+  "First In, First Out" basis. People must adopt either the "oldest" (based on
+  arrival time) of all animals at the shelter, or they select whether they would
+  prefer a dogt or a cat (and will receive the oldest animal fo that type). They
+  cannot select which specific animal they would like. Create the data
+  structures to maintain this system and implement operations such as enqueue,
+  dequeueAny, dequeueDog, and dequeueCat. You may use the built-in LinkedList
+  data structure.
+ */
