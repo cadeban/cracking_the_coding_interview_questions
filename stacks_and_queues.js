@@ -158,6 +158,9 @@ SetOfStacks.prototype = {
   into any other data structure (such as an array). The stack supports the
   following operations: push, pop, peek, and isEmpty.
  */
+
+ //TODO: Add mergeSort version, which uses more than one temporary stack
+
  function sortStack( stack ) {
    if ( stack.isEmpty() ) {
      return null;
@@ -191,3 +194,80 @@ SetOfStacks.prototype = {
   dequeueAny, dequeueDog, and dequeueCat. You may use the built-in LinkedList
   data structure.
  */
+ function LinkedList() {
+   this._head = null;
+   this._size = 0;
+ }
+
+ LinkedList.prototype = {
+   insert: function(value) {
+       var newNode = { value: value, next: null, };
+       // if empty, set head to new node
+       if (this._head === null) {
+         this._head = newNode;
+
+       // otherwise, add to tail
+       } else {
+         var currentNode = this._head;
+         while ( currentNode.next !== null ) {
+           currentNode = currentNode.next;
+         }
+         currentNode.next = newNode;
+       }
+       this._size++;
+     },
+     // removes head only
+     remove: function() {
+       var currentNode = null;
+       if (this._head !== null) {
+         currentNode = this._head;
+         this._head = this._head.next;
+       }
+       return currentNode.value;
+     },
+   peek: function() {
+     return (this._head !== null) ? this._head.value : null;
+   },
+ };
+
+ function Queue() {
+   this._queue = new LinkedList();
+ }
+
+ Queue.prototype = {
+   enqueue: function( value ) {
+     this._queue.insert( value );
+   },
+   dequeue: function() {
+     return this._queue.remove();
+   },
+   peek: function() {
+     return this._queue.peek();
+   },
+   isEmpty: function() {
+     return this._queue._head === null;
+   },
+ };
+
+ function AnimalShelter () {
+   this._catQueue = new Queue();
+   this._dogQueue = new Queue();
+   this._id = 0;
+ }
+
+ AnimalShelter.prototype = {
+   enqueue: function(name, type) {
+     var data = { name: name, type: type, id: this._id };
+     (type === 'dog') ? this._dogQueue.enqueue(data) : this._catQueue.enqueue(data);
+     this._id++;
+   },
+   dequeueAny: function() {
+     return (this._dogQueue.peek() < this._catQueue.peek()) ? this.dequeueDog() : this.dequeueCat();
+   },
+   dequeueDog: function() {
+     return this._dogQueue.dequeue();
+   },
+   dequeueCat: function() {
+     return this._catQueue.dequeue();
+   }
+ };
