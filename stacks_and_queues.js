@@ -256,12 +256,13 @@ SetOfStacks.prototype = {
  }
 
  AnimalShelter.prototype = {
-   enqueue: function(name, type) {
+   enqueue: function(name, type) { // could have Dog or Cat classes
      var data = { name: name, type: type, id: this._id };
      (type === 'dog') ? this._dogQueue.enqueue(data) : this._catQueue.enqueue(data);
      this._id++;
    },
    dequeueAny: function() {
+     // consider the possibility of none in each case
      return (this._dogQueue.peek() < this._catQueue.peek()) ? this.dequeueDog() : this.dequeueCat();
    },
    dequeueDog: function() {
