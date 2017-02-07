@@ -83,3 +83,96 @@ Graph.prototype = {
 
    return subroutine(sortedArray, 0, sortedArray.length - 1);
  }
+
+/*
+  4.3 List of Depths
+  Given a binary tree, design an algorithm which creates a linked list of all
+  the nodes at each depth (e.g., if you have a tree with depth D, you'll have D
+  linked lists).
+ */
+
+// Breadth First Search Solution:
+ function LinkedList(value) {
+   this.head = null;
+   this.tail = null;
+   this.count = 0;
+ }
+
+ LinkedList.prototype = {
+   insert: function(value) {
+     // var newNode = {
+     //   value: value,
+     //   next: null
+     // };
+     newNode = value;
+     newNode.next = null;
+     if (this.head === null) {
+       this.head = newNode;
+       this.tail = newNode;
+     } else {
+       this.tail.next = newNode;
+       this.tail = newNode;
+     }
+     this.count++;
+   },
+   foreach: function(cb) {
+     var current = this.head;
+     while (current !== null) {
+       cb(current);
+       current = current.next;
+     }
+   },
+   size: function() {
+     return this.count;
+   }
+ };
+
+ function listOfDepths(treeHead) {
+   var depthList = [],
+     currentList = new LinkedList(),
+     parents;
+
+   currentList.insert(treeHead);
+   depthList.push(currentList);
+
+   while (currentList.size() > 0) {
+     parents = currentList;
+     depthList.push(currentList);
+     currentList = new LinkedList();
+
+     // loop over most recent list
+     depthList[depthList.length - 1].foreach( function(node) {
+
+       // add the children to the current list
+       if (node.left !== null) {
+         currentList.insert(node.left);
+       }
+       if (node.right !== null) {
+         currentList.insert(node.right);
+       }
+     });
+   }
+
+   return depthList;
+ }
+
+ // Depth First Search Solution:
+ function listOfDepths(treeHead) {
+  var depthList = [];
+
+  function subroutine(node, depth) {
+    if (node === null) {
+      return;
+    }
+    if (!depthList[depth]) {
+      depthList[depth] = new LinkedList();
+    }
+    depthList[depth].insert(node);
+    subroutine(node.left, depth + 1);
+    subroutine(node.right, depth + 1);
+  }
+
+  subroutine(treeHead, 0);
+
+  return depthList;
+}

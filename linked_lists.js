@@ -214,11 +214,6 @@ function palindromeCheck(node) {
   return isPalindrome;
 }
 
-let example = new LinkedListNode();
-example.insert(1);
-example.insert(1);
-example.insert(1);
-
 //console.log( palindromeCheck(example.head) );
 
 /*
