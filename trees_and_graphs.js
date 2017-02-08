@@ -234,3 +234,27 @@ Graph.prototype = {
    }
    return recursiveValidation(node.left, min, node.value) && recursiveValidation(node.right, node.value, max);
  }
+
+ /*
+  4.6 Successor
+  Write an algorithm to find the "next" node (i.e. in-order successor) of a
+  given binary search tree. YOu may assume that each node has a link to its
+  parent.
+  */
+  function successor(node) {
+  var current;
+  if (node.right) {
+    current = node;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current.value;
+  }
+  if (node.parent) {
+    current = node;
+    while (current.parent && current.parent.value < node.value) {
+      current = current.parent;
+    }
+    return current.parent ? current.parent.value : null;
+  }
+}
