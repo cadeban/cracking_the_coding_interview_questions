@@ -176,3 +176,61 @@ Graph.prototype = {
 
   return depthList;
 }
+
+/*
+  4.4 Check Balanced
+  Implement a function to check if a binary tree is balanced. For the purposes
+  of this question, a balanced tree is defined to be a tree such that the
+  heights of the two subtrees of any node never differ by more than one.
+ */
+
+// Brute Force Solution
+ function findMaxDepth(node, currentDepth, result = 0) {
+     if (node === null) {
+       if (currentDepth > result) {
+         result = currentDepth;
+       }
+       return result;
+     }
+
+     result = findMaxDepth(node.left, currentDepth + 1, result);
+     result = findMaxDepth(node.right, currentDepth + 1, result);
+     return result;
+   }
+
+ function isBalanced(node) {
+   if (node === null) {
+     return true;
+   }
+   var leftMaxDepth = findMaxDepth(treeHead.left, 0),
+       rightMaxDepth = findMaxDepth(treeHead.right, 0);
+
+   if ( Math.max(leftMaxDepth, rightMaxDepth) - Math.min(leftMaxDepth, rightMaxDepth) > 1 ) {
+     return false
+   } else {
+     return isBalanced(node.left) && isBalanced(node.right);
+   }
+ }
+
+// Better Solution
+
+
+
+/*
+  4.5 Validate BST
+  Implement a function to check if a binary tree is a binary search tree.
+ */
+
+ function validateBST(root) {
+   return recursiveValidation(root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+ }
+
+ function recursiveValidation(node, min, max) {
+   if (node === null) {
+     return true;
+   }
+   if (node.value < min || node.value > max) {
+     return false;
+   }
+   return recursiveValidation(node.left, min, node.value) && recursiveValidation(node.right, node.value, max);
+ }
