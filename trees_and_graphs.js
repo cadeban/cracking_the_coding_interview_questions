@@ -275,22 +275,22 @@ Graph.prototype = {
  */
 
 
+
 /*
   4.8 First Common Ancestor
-  Design an algorithm and wrie code to find the first common ancestor of two
+  Design an algorithm and write code to find the first common ancestor of two
   nodes in a binary tree. Avoid storing additional nodes in a data structure.
   NOTE: This is not necessarily a binary search tree.
  */
 
- function fCA(root, p, q) {
-   if (root === null) {
-     return false;
-   }
-   if ( !areMyChildren(root, p, q) ) {
-     return;
-   }
+// Naive Solution (assuming each node has reference to parent)
 
-
+ function fCA(p, q) {
+    var current = p;
+    while ( !areMyChildren(current, p, q) ) {
+      current = current.parent;
+    }
+    return current;
  }
 
  function isMyChild(root, node) {
@@ -307,6 +307,37 @@ Graph.prototype = {
  function areMyChildren(root, node1, node2) {
    return isMyChild(root, node1) && isMyChild(root, node2);
  }
+
+// Advanced Solution
+
+ function isMyChild(root, node) {
+  if (root === null) {
+    return false;
+  }
+  if (root === node) {
+    return true;
+  }
+
+  return isMyChild(root.left, node) || isMyChild(root.right, node);
+}
+
+ // TODO: check if both nodes are in tree
+ function fCA(root, p, q) {
+   if (root === null || root === p || root === q) {
+     return root;
+   }
+
+  var pOnLeft = isMyChild(root.left, p),
+      qOnLeft = isMyChild(root.left, q);
+
+  if (pOnLeft !== qOnLeft) {
+    return root;
+  }
+
+  var childSide = pOnLeft ? root.left : root.right;
+  return fCA(childSide, p, q);
+ }
+
 
 /*
   4.9 BST Sequences
