@@ -356,6 +356,8 @@ Graph.prototype = {
 // constraints: distinct elements
 // edge cases:
 
+
+// TODO: Refactor
 function findBSTSequence(node) {
   return findPermutations( flattenTree(node) , node.value);
 }
@@ -405,8 +407,6 @@ function findPermutations(array, root) {
   return results;
 }
 
-
-
 /*
   4.10 Check Subtree
   T1 and T2 are two very large binary trees, with T1 much bigger than T2. Create
@@ -417,7 +417,28 @@ function findPermutations(array, root) {
   the two trees would be identical.
  */
 
+ function checkSubTree(T1, T2) {
+   if (T1 === null) {
+     return false;
+   }
+   if (T1.value === T2.value && areIdentical(T1, T2)) {
+     return true;
+   }
+   return checkSubTree(T1.left, T2) || checkSubTree(T1.right, T2);
+ }
 
+ function areIdentical(T1, T2, result = true) {
+   if ( T1 === null && T2 === null) {
+     return true;
+   }
+   if (T1 === null || T2 === null) {
+     return false;
+   }
+   if (T1.value !== T2.value) {
+     return false;
+   }
+   return areIdentical(T1.left, T2.left) && areIdentical(T1.right, T2.right);
+ }
 
 /*
   4.11 Random Node
