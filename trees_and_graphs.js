@@ -348,14 +348,68 @@ Graph.prototype = {
   Example:
      2
     / \
-  1     3  -> [[2, 1, 3],[2, 3, 1]]
+   1   3  -> [[2, 1, 3], [2, 3, 1]]
  */
+
+// input: tree root
+// output: array of arrays or sets
+// constraints: distinct elements
+// edge cases:
+
+function findBSTSequence(node) {
+  return findPermutations( flattenTree(node) , node.value);
+}
+
+function flattenTree(root) {
+  var result = [];
+
+  function subroutine(node) {
+    if (node === null) {
+      return null;
+    }
+    if (node !== root) {
+      result.push(node.value);
+    }
+
+    subroutine(node.left);
+    subroutine(node.right);
+  }
+
+  subroutine(root);
+  return result;
+}
+
+function findPermutations(array, root) {
+  var results = [];
+
+  function subroutine(setSoFar, remainder) {
+    if (remainder.length === 0){
+      setSoFar.unshift(root);
+      results.push(setSoFar);
+      return;
+    }
+
+    for (var i = 0; i < remainder.length; i++) {
+      var newSet = setSoFar.slice(),
+          newRemainder = remainder.slice();
+
+      newSet.push(remainder[i]);
+      newRemainder.splice(i, 1);
+
+      subroutine( newSet, newRemainder );
+    }
+  }
+
+  subroutine([], array);
+
+  return results;
+}
 
 
 
 /*
   4.10 Check Subtree
-  T1 and T2 are two very large binary trees, with T1 much igger than T2. Create
+  T1 and T2 are two very large binary trees, with T1 much bigger than T2. Create
   an algorithm to determine if T2 is a subtree of T1.
 
   A tree T2 is a subtree of T1 if there exists a node n in T1 such that the
