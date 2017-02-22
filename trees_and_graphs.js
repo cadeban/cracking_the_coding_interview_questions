@@ -514,6 +514,36 @@ function findPermutations(array, root) {
   You are given a binary tree in which each node contains an integer value
   (which might be positive or negative). Design an algorithm to count the number
   of paths that sum to a given value. The path does not need to start or end at
-  the root or a leaf, but it must go downards (traveling only from parent nodes
+  the root or a leaf, but it must go downwards (traveling only from parent nodes
   to child nodes).
  */
+
+ function pathsWithSum(root, target) {
+   var count = 0;
+
+   function subroutine(node, sumSoFar = []) {
+     console.log(sumSoFar);
+     if (node === null) {
+       return;
+     }
+
+     var newSums = sumSoFar.map(function(sum, i) {
+       return sum += node.value;
+     });
+
+     newSums.push(node.value);
+     var index = newSums.indexOf(target);
+
+     if (index !== -1 && index !== newSums.length - 1) {
+       count++;
+     }
+
+     subroutine(node.left, newSums);
+     subroutine(node.right, newSums);
+
+   }
+
+   subroutine(root, []);
+
+   return count;
+ }
