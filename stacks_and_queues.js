@@ -1,67 +1,73 @@
 /* Stack Class */
-function Stack() {
-  this._stack = [];
-}
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
 
-Stack.prototype = {
-  push: function(value) {
-    this._stack.push(value);
-  },
-  pop: function() {
-    return this._stack.pop();
-  },
-  peek: function() {
-    return this._stack[this._stack.length - 1];
-  },
-  isEmpty: function() {
-    return this._stack.length === 0;
-  },
-  size: function() {
-    return this._stack.length - 1;
-  },
-};
+  push(value) {
+    this.stack.push(value);
+  }
+
+  pop() {
+    return this.stack.pop();
+  }
+
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  size() {
+    return this.stack.length - 1;
+  }
+}
 
 
 /* Three in One:
   Describe how you could use a single array to implement three stacks.
 */
 
-function ThreeStacks() {
+class ThreeStacks {
 
 }
 
-/* 3.2 Stack Min:
-  How would you design a stack which, in addition to push and pop, has a function which returns the minimum element? Push, pop, and min should all operate in O(1) time.
+/* 3.2 Stack Min
+  How would you design a stack which, in addition to push and pop, has a
+  function which returns the minimum element? Push, pop, and min should all
+  operate in O(1) time.
 */
 
-function StackMin() {
-  this._stack = new Stack();
-  this._min = new Stack();
+class StackMin {
+  constructor() {
+    this.stack = new Stack();
+    this.min = new Stack();
+  }
+  push(value) {
+    if (this.min.isEmpty() || value < this.min.peek()) {
+      this.min.push(value);
+    }
+    this.stack.push(value);
+  }
+  pop() {
+    if (this.stack.isEmpty()) {
+      throw Error;
+    }
+    if (this.stack.peek() === this.min.peek()) {
+      this.min.pop();
+    }
+    return this.stack.pop();
+  }
+  min() {
+    if (this.min.isEmpty()) {
+      throw Error;
+    }
+    return this.min.peek();
+  }
 }
 
-StackMin.prototype = {
-  push: function(value) {
-    if (this._min.isEmpty() || value < this._min.peek()) {
-      this._min.push(value);
-    }
-    this._stack.push(value);
-  },
-  pop: function() {
-    if (this._stack.isEmpty()) {
-      throw Error;
-    }
-    if (this._stack.peek() === this._min.peek()) {
-      this._min.pop();
-    }
-    return this._stack.pop();
-  },
-  min: function() {
-    if (this._min.isEmpty()) {
-      throw Error;
-    }
-    return this._min.peek();
-  }
-};
 
 /*  3.3 Stack Of Plates
   Imagine a stack of plates. If the stack gets too high, it might topple.
@@ -77,79 +83,80 @@ StackMin.prototype = {
   Implement a function popAt(index) which performs a pop operation on a specific substack.
 */
 
-function SetOfStacks(capacity) {
-  this._capacity = capacity || 3;
-  this._currentStack = 1;
-  this._stacks = {
-    1: new Stack(),
-  };
-}
+class SetOfStacks {
+  constructor(capacity) {
+    this.capacity = capacity || 3;
+    this.currentStack = 1;
+    this.stacks = {
+      1: new Stack(),
+    };
+  }
 
-SetOfStacks.prototype = {
-  push: function(value) {
-    if (this._stacks[this._currentStack].size() === this._capacity ) {
-      this._currentStack++;
-      this._stacks[this._currentStack] = new Stack();
+  push(value) {
+    if (this.stacks[this.currentStack].size() === this.capacity) {
+      this.currentStack += 1;
+      this.stacks[this.currentStack] = new Stack();
     }
-    this._stacks[this._currentStack].push(value);
-  },
-  pop: function() {
-    while(this._currentStack > 0 && this._stacks[this._currentStack].isEmpty()) {
-      this._currentStack--;
+    this.stacks[this.currentStack].push(value);
+  }
+  pop() {
+    while (this.currentStack > 0 && this.stacks[this.currentStack].isEmpty()) {
+      this.currentStack -= 1;
     }
-    return (!this._stacks[this._currentStack].isEmpty()) ? this._stacks[this._currentStack].pop() : null;
-  },
+    return (!this.stacks[this.currentStack].isEmpty()) ?
+            this.stacks[this.currentStack].pop() : null;
+  }
   // popAt: function(index) {
   //   return this._stacks[index].pop();
   // },
-  popAt: function(index) {
+  popAt(index) {
     //* is there a way to amortize this?
-    var topOfIndex = this._stacks[index].pop(); //4
-    /*Reshift latter stacks*/
-    var tempStack = new Stack();
-    while (index++ < this._currentStack) {
-      while (!this._stacks[index].isEmpty()) {
-        tempStack.push( this._stacks[index].pop() );
+    const topOfIndex = this.stacks[index].pop();
+    /* Reshift latter stacks */
+    const tempStack = new Stack();
+    while ((index += 1) < this.currentStack) { // TODO: Fix index assignment
+      while (!this.stacks[index].isEmpty()) {
+        tempStack.push(this.stacks[index].pop());
       }
 
       while (!tempStack.isEmpty()) {
-        var addToStacks = tempStack.pop();
-        if ( this._stacks[index - 1] && (this._stacks[index - 1].size() !== this._capacity) ) {
-          this._stacks[index - 1].push(addToStacks);
+        const addToStacks = tempStack.pop();
+        if (this.stacks[index - 1] && (this.stacks[index - 1].size() !== this.capacity)) {
+          this.stacks[index - 1].push(addToStacks);
         } else {
-          this._stacks[index].push(addToStacks);
+          this.stacks[index].push(addToStacks);
         }
       }
     }
     return topOfIndex;
   }
-};
+}
 
 /**
  * 3.4 Queue Stack
  */
 
- function QueueStack () {
-   this._firstStack = new Stack();
-   this._secondStack = new Stack();
- }
+class QueueStack {
+  constructor() {
+    this.firstStack = new Stack();
+    this.secondStack = new Stack();
+  }
+  enqueue(value) {
+    this.firstStack.push(value);
+  }
 
- QueueStack.prototype = {
-   enqueue: function(value) {
-     this._firstStack.push(value);
-   },
-   dequeue: function() {
-     if (this._firstStack.isEmpty && this._secondStack.isEmpty()) {
-       throw Error;
-     }
-     if (this._secondStack.isEmpty()) {
-       while (!this._firstStack.isEmpty()) {
-         this._secondStack.push(this._firstStack.pop());
-       }
-     }
-     return this._secondStack.pop();
-   }
- };
+  dequeue() {
+    if (this.firstStack.isEmpty && this.secondStack.isEmpty()) {
+      throw Error;
+    }
+    if (this.secondStack.isEmpty()) {
+      while (!this.firstStack.isEmpty()) {
+        this.secondStack.push(this.firstStack.pop());
+      }
+    }
+    return this.secondStack.pop();
+  }
+}
 
 /*
   3.5 Sort Stack
@@ -159,29 +166,29 @@ SetOfStacks.prototype = {
   following operations: push, pop, peek, and isEmpty.
  */
 
- //TODO: Add mergeSort version, which uses more than one temporary stack
+ // TODO: Add mergeSort version, which uses more than one temporary stack
 
- function sortStack( stack ) {
-   if ( stack.isEmpty() ) {
-     return null;
-   }
-   var tempStack = new Stack();
-   var currentTop = stack.pop();
+function sortStack(stack) {
+  if (stack.isEmpty()) {
+    return null;
+  }
+  const tempStack = new Stack();
+  let currentTop = stack.pop();
 
-   while ( !stack.isEmpty() ) {
-     var currentTop = stack.pop();
-     while ( tempStack.peek() > currentTop ) {
-       stack.push( tempStack.pop() );
-     }
-     tempStack.push( currentTop );
-   }
+  while (!stack.isEmpty()) {
+    currentTop = stack.pop();
+    while (tempStack.peek() > currentTop) {
+      stack.push(tempStack.pop());
+    }
+    tempStack.push(currentTop);
+  }
 
-   while ( !tempStack.isEmpty() ) {
-     stack.push( tempStack.pop() );
-   }
+  while (!tempStack.isEmpty()) {
+    stack.push(tempStack.pop());
+  }
 
-   return stack;
- }
+  return stack;
+}
 
 /*
   3.6 Animal Shelter
@@ -194,81 +201,87 @@ SetOfStacks.prototype = {
   dequeueAny, dequeueDog, and dequeueCat. You may use the built-in LinkedList
   data structure.
  */
- function LinkedList() {
-   this._head = null;
-   this._size = 0;
- }
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.size = 0;
+  }
+  insert(value) {
+    const newNode = { value, next: null };
+    // if empty, set head to new node
+    if (this.head === null) {
+      this.head = newNode;
 
- LinkedList.prototype = {
-   insert: function(value) {
-       var newNode = { value: value, next: null, };
-       // if empty, set head to new node
-       if (this._head === null) {
-         this._head = newNode;
+    // otherwise, add to tail
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next !== null) {
+        currentNode = currentNode.next;
+      }
+      currentNode.next = newNode;
+    }
+    this.size += 1;
+  }
+    // removes head only
+  remove() {
+    let currentNode = null;
+    if (this.head !== null) {
+      currentNode = this.head;
+      this.head = this.head.next;
+    }
+    return currentNode.value;
+  }
 
-       // otherwise, add to tail
-       } else {
-         var currentNode = this._head;
-         while ( currentNode.next !== null ) {
-           currentNode = currentNode.next;
-         }
-         currentNode.next = newNode;
-       }
-       this._size++;
-     },
-     // removes head only
-     remove: function() {
-       var currentNode = null;
-       if (this._head !== null) {
-         currentNode = this._head;
-         this._head = this._head.next;
-       }
-       return currentNode.value;
-     },
-   peek: function() {
-     return (this._head !== null) ? this._head.value : null;
-   },
- };
+  peek() {
+    return (this.head !== null) ? this.head.value : null;
+  }
+}
 
- function Queue() {
-   this._queue = new LinkedList();
- }
+class Queue {
+  constructor() {
+    this.queue = new LinkedList();
+  }
+  enqueue(value) {
+    this.queue.insert(value);
+  }
+  dequeue() {
+    return this.queue.remove();
+  }
+  peek() {
+    return this.queue.peek();
+  }
+  isEmpty() {
+    return this.queue.head === null;
+  }
+}
 
- Queue.prototype = {
-   enqueue: function( value ) {
-     this._queue.insert( value );
-   },
-   dequeue: function() {
-     return this._queue.remove();
-   },
-   peek: function() {
-     return this._queue.peek();
-   },
-   isEmpty: function() {
-     return this._queue._head === null;
-   },
- };
+class AnimalShelter {
+  constructor() {
+    this.catQueue = new Queue();
+    this.dogQueue = new Queue();
+    this.id = 0;
+  }
 
- function AnimalShelter () {
-   this._catQueue = new Queue();
-   this._dogQueue = new Queue();
-   this._id = 0;
- }
+  enqueue(name, type) { // could have Dog or Cat classes
+    const data = { name, type, id: this.id };
+    if (type === 'dog') {
+      this.dogQueue.enqueue(data);
+    } else {
+      this.catQueue.enqueue(data);
+    }
+    this.id += 1;
+  }
 
- AnimalShelter.prototype = {
-   enqueue: function(name, type) { // could have Dog or Cat classes
-     var data = { name: name, type: type, id: this._id };
-     (type === 'dog') ? this._dogQueue.enqueue(data) : this._catQueue.enqueue(data);
-     this._id++;
-   },
-   dequeueAny: function() {
-     // consider the possibility of none in each case
-     return (this._dogQueue.peek() < this._catQueue.peek()) ? this.dequeueDog() : this.dequeueCat();
-   },
-   dequeueDog: function() {
-     return this._dogQueue.dequeue();
-   },
-   dequeueCat: function() {
-     return this._catQueue.dequeue();
-   }
- };
+  dequeueAny() {
+   // consider the possibility of none in each case
+    return (this.dogQueue.peek() < this.catQueue.peek()) ? this.dequeueDog() : this.dequeueCat();
+  }
+
+  dequeueDog() {
+    return this.dogQueue.dequeue();
+  }
+
+  dequeueCat() {
+    return this.catQueue.dequeue();
+  }
+}

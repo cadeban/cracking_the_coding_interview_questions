@@ -1,30 +1,34 @@
-function Graph() {
-  this._nodes = {};
-}
+class Graph {
+  constructor() {
+    this.nodes = {};
+  }
 
-Graph.prototype = {
-  insert: function(value) {
-    var newNode = {value: value, edges: {}};
-    this._nodes[value] = newNode;
-  },
-  remove: function(value) {
-    var removedNode = this._nodes[value];
-    for (var node in removedNode.edges) {
+  insert(value) {
+    const newNode = { value, edges: {} };
+    this.nodes[value] = newNode;
+  }
+
+  remove(value) {
+    const removedNode = this.nodes[value];
+    for (const node in removedNode.edges) {
       delete removedNode.edges[node].edges[value];
     }
     removedNode.edges = {};
     return removedNode;
-  },
-  addEdge: function(value1, value2) {
-    this._nodes[value1].edges[value2] = this._nodes[value2];
-  },
-  removeEdge: function(value1, value2) {
-    delete this._nodes[value1].edges[value2];
-  },
-  hasEdge: function(value1, value2) {
-    return this._nodes[value1].edges[value2];
   }
-};
+
+  addEdge(value1, value2) {
+    this.nodes[value1].edges[value2] = this.nodes[value2];
+  }
+
+  removeEdge(value1, value2) {
+    delete this.nodes[value1].edges[value2];
+  }
+
+  hasEdge(value1, value2) {
+    return this.nodes[value1].edges[value2];
+  }
+}
 
 /*
   4.1 Route Between Nodes
@@ -32,57 +36,61 @@ Graph.prototype = {
   route between two nodes.
  */
 
- function isConnected(value1, value2, graph) {
-   var queue = [], current;
-   queue.push(graph._nodes[value1]);
-   while (queue.length > 0) {
-     current = queue.pop();
-     current.visited = true;
-     if (graph.hasEdge(current.value, value2)) {
-       return true;
-     }
-     for (var node in current.edges) {
-       var childNode = current.edges[node];
-       if (!graph._nodes[childNode].visited) {
-         queue.push(childNode);
-       }
-     }
-   }
-   return false;
- }
+function isConnected(value1, value2, graph) {
+  const queue = [];
+  let current;
+  queue.push(graph.nodes[value1]);
+  while (queue.length > 0) {
+    current = queue.pop();
+    current.visited = true;
+    if (graph.hasEdge(current.value, value2)) {
+      return true;
+    }
+    for (let node in current.edges) {
+      const childNode = current.edges[node];
+      if (!graph.nodes[childNode].visited) {
+        queue.push(childNode);
+      }
+    }
+  }
+  return false;
+}
 
- function routeBetweenNodes(value1, value2, graph) {
-   var foundRoute;
-   foundRoute = isConnected(value1, value2, graph);
-   foundRoute = foundRoute || isConnected(value2, value1, graph);
-   return foundRoute;
- }
+function routeBetweenNodes(value1, value2, graph) {
+  let foundRoute;
+  foundRoute = isConnected(value1, value2, graph);
+  foundRoute = foundRoute || isConnected(value2, value1, graph);
+  return foundRoute;
+}
 
 /*
   4.2 Minimal Tree
   Given a sorted (increasing order) array with unique integer elements, write an
   algorithm to create a binary search tree with minimal height.
  */
- function BinarySearchTree(value) {
-   this.value = value;
-   this.left = null;
-   this.right = null;
- }
+class BinarySearchTree {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
- function minimalTree(sortedArray) {
-   function subroutine(array, start, end) {
-     if (end < start) {
-       return null;
-     }
-     var mid = Math.round( ( start + end ) / 2 ),
-       node = new BinarySearchTree(array[mid]);
-     node.left = subroutine(array, start, mid - 1);
-     node.right = subroutine(array, mid + 1, end);
-     return node;
-   }
+function minimalTree(sortedArray) {
+  function subroutine(array, start, end) {
+    if (end < start) {
+      return null;
+    }
+    const mid = Math.round((start + end) / 2);
+    const node = new BinarySearchTree(array[mid]);
+    node.left = subroutine(array, start, mid - 1);
+    node.right = subroutine(array, mid + 1, end);
+    return node;
+  }
 
-   return subroutine(sortedArray, 0, sortedArray.length - 1);
- }
+  return subroutine(sortedArray, 0, sortedArray.length - 1);
+}
+
 
 /*
   4.3 List of Depths
@@ -92,73 +100,75 @@ Graph.prototype = {
  */
 
 // Breadth First Search Solution:
- function LinkedList(value) {
-   this.head = null;
-   this.tail = null;
-   this.count = 0;
- }
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.count = 0;
+  }
 
- LinkedList.prototype = {
-   insert: function(value) {
-     // var newNode = {
-     //   value: value,
-     //   next: null
-     // };
-     newNode = value;
-     newNode.next = null;
-     if (this.head === null) {
-       this.head = newNode;
-       this.tail = newNode;
-     } else {
-       this.tail.next = newNode;
-       this.tail = newNode;
-     }
-     this.count++;
-   },
-   foreach: function(cb) {
-     var current = this.head;
-     while (current !== null) {
-       cb(current);
-       current = current.next;
-     }
-   },
-   size: function() {
-     return this.count;
-   }
- };
+  insert(value) {
+    // var newNode = {
+    //   value: value,
+    //   next: null
+    // };
+    const newNode = value;
+    newNode.next = null;
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.count += 1;
+  }
 
- function listOfDepths(treeHead) {
-   var depthList = [],
-     currentList = new LinkedList(),
-     parents;
+  foreach(cb) {
+    let current = this.head;
+    while (current !== null) {
+      cb(current);
+      current = current.next;
+    }
+  }
 
-   currentList.insert(treeHead);
-   depthList.push(currentList);
+  size() {
+    return this.count;
+  }
+}
 
-   while (currentList.size() > 0) {
-     parents = currentList;
-     depthList.push(currentList);
-     currentList = new LinkedList();
 
-     // loop over most recent list
-     depthList[depthList.length - 1].foreach( function(node) {
+function listOfDepths(treeHead) {
+  const depthList = [];
+  let currentList = new LinkedList();
+  let parents;
 
-       // add the children to the current list
-       if (node.left !== null) {
-         currentList.insert(node.left);
-       }
-       if (node.right !== null) {
-         currentList.insert(node.right);
-       }
-     });
-   }
+  currentList.insert(treeHead);
+  depthList.push(currentList);
 
-   return depthList;
- }
+  while (currentList.size() > 0) {
+    parents = currentList;
+    depthList.push(currentList);
+    currentList = new LinkedList();
+
+    // loop over most recent list
+    depthList[depthList.length - 1].foreach(node => {
+      // add the children to the current list
+      if (node.left !== null) {
+        currentList.insert(node.left);
+      }
+      if (node.right !== null) {
+        currentList.insert(node.right);
+      }
+    });
+  }
+
+  return depthList;
+}
 
  // Depth First Search Solution:
- function listOfDepths(treeHead) {
-  var depthList = [];
+function listOfDepths(treeHead) {
+  const depthList = [];
 
   function subroutine(node, depth) {
     if (node === null) {
@@ -185,35 +195,34 @@ Graph.prototype = {
  */
 
 // Brute Force Solution
- function findMaxDepth(node, currentDepth, result = 0) {
-     if (node === null) {
-       if (currentDepth > result) {
-         result = currentDepth;
-       }
-       return result;
-     }
+function findMaxDepth(node, currentDepth, result) { // result = 0
+  if (node === null) {
+    if (currentDepth > result) {
+      result = currentDepth;
+    }
+    return result;
+  }
 
-     result = findMaxDepth(node.left, currentDepth + 1, result);
-     result = findMaxDepth(node.right, currentDepth + 1, result);
-     return result;
-   }
+  result = findMaxDepth(node.left, currentDepth + 1, result);
+  result = findMaxDepth(node.right, currentDepth + 1, result);
+  return result;
+}
 
- function isBalanced(node) {
-   if (node === null) {
-     return true;
-   }
-   var leftMaxDepth = findMaxDepth(treeHead.left, 0),
-       rightMaxDepth = findMaxDepth(treeHead.right, 0);
+function isBalanced(node) {
+  if (node === null) {
+    return true;
+  }
+  const leftMaxDepth = findMaxDepth(node.left, 0);
+  const rightMaxDepth = findMaxDepth(node.right, 0);
 
-   if ( Math.max(leftMaxDepth, rightMaxDepth) - Math.min(leftMaxDepth, rightMaxDepth) > 1 ) {
-     return false
-   } else {
-     return isBalanced(node.left) && isBalanced(node.right);
-   }
- }
+  if (Math.max(leftMaxDepth, rightMaxDepth) - Math.min(leftMaxDepth, rightMaxDepth) > 1) {
+    return false;
+  } else {
+    return isBalanced(node.left) && isBalanced(node.right);
+  }
+}
 
 // Better Solution
-
 
 
 /*
@@ -221,19 +230,21 @@ Graph.prototype = {
   Implement a function to check if a binary tree is a binary search tree.
  */
 
- function validateBST(root) {
-   return recursiveValidation(root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
- }
+function recursiveValidation(node, min, max) {
+  if (node === null) {
+    return true;
+  }
+  if (node.value < min || node.value > max) {
+    return false;
+  }
+  return recursiveValidation(node.left, min, node.value) &&
+        recursiveValidation(node.right, node.value, max);
+}
 
- function recursiveValidation(node, min, max) {
-   if (node === null) {
-     return true;
-   }
-   if (node.value < min || node.value > max) {
-     return false;
-   }
-   return recursiveValidation(node.left, min, node.value) && recursiveValidation(node.right, node.value, max);
- }
+function validateBST(root) {
+  return recursiveValidation(root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+}
+
 
  /*
   4.6 Successor
@@ -241,8 +252,8 @@ Graph.prototype = {
   given binary search tree. YOu may assume that each node has a link to its
   parent.
   */
-  function successor(node) {
-  var current;
+function successor(node) {
+  let current;
   if (node.right) {
     current = node;
     while (current.left !== null) {
@@ -275,7 +286,6 @@ Graph.prototype = {
  */
 
 
-
 /*
   4.8 First Common Ancestor
   Design an algorithm and write code to find the first common ancestor of two
@@ -284,33 +294,33 @@ Graph.prototype = {
  */
 
 // Naive Solution (assuming each node has reference to parent)
+function isMyChild(root, node) {
+  if (root === null) {
+    return false;
+  }
+  if (root === node) {
+    return true;
+  }
 
- function fCA(p, q) {
-    var current = p;
-    while ( !areMyChildren(current, p, q) ) {
-      current = current.parent;
-    }
-    return current;
- }
+  return isMyChild(root.left, node) || isMyChild(root.right, node);
+}
 
- function isMyChild(root, node) {
-   if (root === null) {
-     return false;
-   }
-   if (root === node) {
-     return true;
-   }
+function areMyChildren(root, node1, node2) {
+  return isMyChild(root, node1) && isMyChild(root, node2);
+}
 
-   return isMyChild(root.left, node) || isMyChild(root.right, node);
- }
+function fCA(p, q) {
+  let current = p;
+  while (!areMyChildren(current, p, q)) {
+    current = current.parent;
+  }
+  return current;
+}
 
- function areMyChildren(root, node1, node2) {
-   return isMyChild(root, node1) && isMyChild(root, node2);
- }
 
 // Advanced Solution
 
- function isMyChild(root, node) {
+function isMyChild(root, node) {
   if (root === null) {
     return false;
   }
@@ -322,21 +332,21 @@ Graph.prototype = {
 }
 
  // TODO: check if both nodes are in tree
- function fCA(root, p, q) {
-   if (root === null || root === p || root === q) {
-     return root;
-   }
+function fCA(root, p, q) {
+  if (root === null || root === p || root === q) {
+    return root;
+  }
 
-  var pOnLeft = isMyChild(root.left, p),
-      qOnLeft = isMyChild(root.left, q);
+  const pOnLeft = isMyChild(root.left, p);
+  const qOnLeft = isMyChild(root.left, q);
 
   if (pOnLeft !== qOnLeft) {
     return root;
   }
 
-  var childSide = pOnLeft ? root.left : root.right;
+  const childSide = pOnLeft ? root.left : root.right;
   return fCA(childSide, p, q);
- }
+}
 
 
 /*
@@ -358,10 +368,6 @@ Graph.prototype = {
 
 
 // TODO: Refactor
-function findBSTSequence(node) {
-  return findPermutations( flattenTree(node) , node.value);
-}
-
 function flattenTree(root) {
   var result = [];
 
@@ -382,23 +388,23 @@ function flattenTree(root) {
 }
 
 function findPermutations(array, root) {
-  var results = [];
+  const results = [];
 
   function subroutine(setSoFar, remainder) {
-    if (remainder.length === 0){
+    if (remainder.length === 0) {
       setSoFar.unshift(root);
       results.push(setSoFar);
       return;
     }
 
-    for (var i = 0; i < remainder.length; i++) {
-      var newSet = setSoFar.slice(),
-          newRemainder = remainder.slice();
+    for (let i = 0; i < remainder.length; i += 1) {
+      const newSet = setSoFar.slice();
+      const newRemainder = remainder.slice();
 
       newSet.push(remainder[i]);
       newRemainder.splice(i, 1);
 
-      subroutine( newSet, newRemainder );
+      subroutine(newSet, newRemainder);
     }
   }
 
@@ -406,6 +412,11 @@ function findPermutations(array, root) {
 
   return results;
 }
+
+function findBSTSequence(node) {
+  return findPermutations(flattenTree(node), node.value);
+}
+
 
 /*
   4.10 Check Subtree
@@ -416,19 +427,8 @@ function findPermutations(array, root) {
   subtree of n is identicial to T2. That is, if you cut off the tree at node n,
   the two trees would be identical.
  */
-
- function checkSubTree(T1, T2) {
-   if (T1 === null) {
-     return false;
-   }
-   if (T1.value === T2.value && areIdentical(T1, T2)) {
-     return true;
-   }
-   return checkSubTree(T1.left, T2) || checkSubTree(T1.right, T2);
- }
-
- function areIdentical(T1, T2, result = true) {
-   if ( T1 === null && T2 === null) {
+ function areIdentical(T1, T2, result) { // result = true
+   if (T1 === null && T2 === null) {
      return true;
    }
    if (T1 === null || T2 === null) {
@@ -440,6 +440,17 @@ function findPermutations(array, root) {
    return areIdentical(T1.left, T2.left) && areIdentical(T1.right, T2.right);
  }
 
+function checkSubTree(T1, T2) {
+  if (T1 === null) {
+    return false;
+  }
+  if (T1.value === T2.value && areIdentical(T1, T2)) {
+    return true;
+  }
+  return checkSubTree(T1.left, T2) || checkSubTree(T1.right, T2);
+}
+
+
 /*
   4.11 Random Node
   You are implementing a binary tree class from scratch which, in addition to
@@ -449,65 +460,74 @@ function findPermutations(array, root) {
   implement the rest of the methods.
  */
 
- function TreeNode(value) {
-   this.value = value;
-   this.left = null;
-   this.right = null;
- }
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
- function Tree(value) {
-   this.root = new TreeNode(value);
-   this.size = 0;
- }
+class Tree {
+  constructor(value) {
+    this.root = new TreeNode(value);
+    this.size = 0;
+  }
 
- Tree.prototype = {
-   insert: function(value){
-     var treeNode = new TreeNode(value);
-     // finds place to insert new node (recursive)
-     this.size++;
-   },
-   getRandomNode: function() {
-     if (root === null) {
-       return null;
-     }
-     var randomInt = Math.random() * this.numOfNodes,
-         count = 0,
-         resultNode;
+  insert(value) {
+    const treeNode = new TreeNode(value);
+    // finds place to insert new node (recursive)
+    this.size += 1;
+  }
 
-     function subroutine(node) {
-       if (count === randomInt) {
-         resultNode = node;
-         return;
-       }
-       subroutine(node.left);
-       subroutine(node.right);
-     }
+  getRandomNode() {
+    if (root === null) {
+      return null;
+    }
+    const randomInt = Math.random() * this.numOfNodes;
+    const count = 0;
+    let resultNode;
 
-     subroutine(this.root);
+    function subroutine(node) {
+      if (count === randomInt) {
+        resultNode = node;
+        return;
+      }
+      subroutine(node.left);
+      subroutine(node.right);
+    }
 
-     return resultNode;
-   },
- };
+    subroutine(this.root);
 
- Tree.prototype = {
-   getRandomNode: function() {
-     if (root === null) {
-       return null;
-     }
-     var randomInt = Math.random() * this.size();
-     return root.getIthNode(i);
-   },
-   getIthNode: function(i) {
-     var leftSize = (this.left === null) ? 0 : this.left.size();
-     if (i < leftSize) {
-       return this.left.getIthNode(i);
-     } else if (i === leftSize) { // if random integer is equal to current node's size property
-       return this;
-     } else {
-       return this.right.getIthNode(i - (leftSize + 1)); // skipping left hand side's nodes
-     }
-   },
- };
+    return resultNode;
+  }
+}
+
+class Tree {
+  constructor(value) {
+    this.root = new TreeNode(value);
+    this.size = 0;
+  }
+
+  getRandomNode() {
+    if (root === null) {
+      return null;
+    }
+    const randomInt = Math.random() * this.size();
+    return root.getIthNode(randomInt);
+  }
+
+  getIthNode(i) {
+    const leftSize = (this.left === null) ? 0 : this.left.size();
+    if (i < leftSize) {
+      return this.left.getIthNode(i);
+    } else if (i === leftSize) { // if random integer is equal to current node's size property
+      return this;
+    } else {
+      return this.right.getIthNode(i - (leftSize + 1)); // skipping left hand side's nodes
+    }
+  }
+}
 
 /*
   4.12 Paths with Sum
@@ -518,32 +538,30 @@ function findPermutations(array, root) {
   to child nodes).
  */
 
- function pathsWithSum(root, target) {
-   var count = 0;
+function pathsWithSum(root, target) {
+  let count = 0;
 
-   function subroutine(node, sumSoFar = []) {
-     console.log(sumSoFar);
-     if (node === null) {
-       return;
-     }
+  function subroutine(node, sumSoFar) { // sumSoFar = []
+    if (node === null) {
+      return;
+    }
+    // TODO: refactor so we're not making a copy every time
+    const newSums = sumSoFar.map((sum) => {
+      return sum += node.value;
+    });
 
-     var newSums = sumSoFar.map(function(sum, i) {
-       return sum += node.value;
-     });
+    newSums.push(node.value);
+    const index = newSums.indexOf(target);
 
-     newSums.push(node.value);
-     var index = newSums.indexOf(target);
+    if (index !== -1 && index !== newSums.length - 1) {
+      count += 1;
+    }
 
-     if (index !== -1 && index !== newSums.length - 1) {
-       count++;
-     }
+    subroutine(node.left, newSums);
+    subroutine(node.right, newSums);
+  }
 
-     subroutine(node.left, newSums);
-     subroutine(node.right, newSums);
+  subroutine(root, []);
 
-   }
-
-   subroutine(root, []);
-
-   return count;
- }
+  return count;
+}

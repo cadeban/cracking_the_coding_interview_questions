@@ -73,7 +73,7 @@
     Result: nothing is returned, but the new linked list looks like a -> b -> d -> e -> f
 */
 
-    /*function deleteMiddleNode(middleNode) {
+    /* function deleteMiddleNode(middleNode) {
         set middleNode.value = middleNode.next.value
         set middleNode.next = middleNode.next.next;
       } */
@@ -173,32 +173,34 @@
    */
 
 
-
 // 2.6 Palindrome: Implement a function to check if a linked list is a palindrome.
 // Question: singly linked or doubly linked?
 
-function LinkedListNode(value) {
-  this.head = null;
-  this.tail = null;
+class LinkedListNode {
+  constructor(value) {
+    this.value = value;
+    this.head = null;
+    this.tail = null;
+  }
+
+  insert(value) {
+    const newNode = {
+      value,
+      next: null,
+    };
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
 }
 
-LinkedListNode.prototype.insert = function(value) {
-  let newNode = {
-    value: value,
-    next: null
-  };
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-};
-
-function palindromeCheck(node) {
-  let currentNode = node,
-    isPalindrome = true;
+function palindromeCheck(input) {
+  let currentNode = input;
+  let isPalindrome = true;
   function subroutine(node) {
     if (node === null) {
       return;
@@ -208,13 +210,12 @@ function palindromeCheck(node) {
       isPalindrome = false;
     }
     currentNode = currentNode.next;
-    return;
   }
-  subroutine(node);
+  subroutine(input);
   return isPalindrome;
 }
 
-//console.log( palindromeCheck(example.head) );
+// console.log( palindromeCheck(example.head) );
 
 /*
   2.7 Intersection:
@@ -227,67 +228,72 @@ function palindromeCheck(node) {
 
 // Version 1, non-constant space
 
-  function linkedListIntersection(ll1, ll2) {
-    let record = {};
-    while (ll1) {
-      if (!record[JSON.stringify(ll1)]) {
-        record[JSON.stringify(ll1)] = [];
-      }
-      record[JSON.stringify(ll1)].push(ll1);
-      ll1 = ll1.next;
+function linkedListIntersection(ll1, ll2) {
+  const record = {};
+  let pointer1 = ll1;
+  let pointer2 = ll2;
+  while (pointer1) {
+    if (!record[JSON.stringify(ll1)]) {
+      record[JSON.stringify(ll1)] = [];
     }
-    while (ll2) {
-      console.log(ll2);
-      if (record[JSON.stringify(ll2)]) {
-        for (let i = 0; i < record[JSON.stringify(ll2)].length; i++) {
-          if (record[JSON.stringify(ll2)][i] === ll2) {
-            return true;
-          }
+    record[JSON.stringify(ll1)].push(ll1);
+    pointer1 = pointer1.next;
+  }
+  while (pointer2) {
+    if (record[JSON.stringify(pointer2)]) {
+      for (let i = 0; i < record[JSON.stringify(ll2)].length; i += 1) {
+        if (record[JSON.stringify(pointer2)][i] === pointer2) {
+          return true;
         }
       }
-      ll2 = ll2.next;
     }
-    return null;
+    pointer2 = pointer2.next;
   }
+  return null;
+}
 
 // Version 2, constant space
   // in case we don't have a convenient size method/property on our linked list class
-  function getTailNodeAndSize(llHead) {
-    let node = llHead, size = 0;
-    while (node.next !== null) {
-      size++;
-      node = node.next;
-    }
-    return {tail: node, size: size};
+function getTailNodeAndSize(llHead) {
+  let node = llHead;
+  let size = 0;
+  while (node.next !== null) {
+    size += 1;
+    node = node.next;
+  }
+  return {
+    tail: node,
+    size,
+  };
+}
+
+function linkedListIntersection(ll1, ll2) {
+  const ll1Info = getTailNodeAndSize(ll1);
+  const ll2Info = getTailNodeAndSize(ll2);
+  let longest = (ll1Info.size >= ll2Info.size) ? ll1 : ll2;
+  let shortest = (ll1Info.size <= ll2Info.size) ? ll1 : ll2;
+  let diff = Math.max(ll1Info.size, ll2Info.size) - Math.min(ll1Info.size, ll2Info.size);
+
+  // if tails aren't the same, then they don't intersect; short circuits fn
+  if (ll1Info.tail !== ll2Info.tail) {
+    return false;
   }
 
-  function linkedListIntersection(ll1, ll2) {
-    let ll1Info = getTailNodeAndSize(ll1),
-      ll2Info = getTailNodeAndSize(ll2),
-      longest = (ll1Info.size >= ll2Info.size) ? ll1 : ll2,
-      shortest = (ll1Info.size <= ll2Info.size) ? ll1 : ll2,
-      diff = Math.max(ll1Info.size, ll2Info.size) - Math.min(ll1Info.size, ll2Info.size);
-
-    // if tails aren't the same, then they don't intersect; short circuits fn
-    if (ll1Info.tail !== ll2Info.tail) {
-      return false;
-    }
-
-    // "chop off" the difference from longest (break off into helper function?)
-    while (diff) {
-      longest = longest.next;
-      diff -= 1;
-    }
-
-    // loop over longest and shortest and compare each node
-    while (longest && shortest) {
-      if (longest === shortest) {
-        return longest;
-      }
-      longest = longest.next;
-      shortest = shortest.next;
-    }
+  // "chop off" the difference from longest (break off into helper function?)
+  while (diff) {
+    longest = longest.next;
+    diff -= 1;
   }
+
+  // loop over longest and shortest and compare each node
+  while (longest && shortest) {
+    if (longest === shortest) {
+      return longest;
+    }
+    longest = longest.next;
+    shortest = shortest.next;
+  }
+}
 
 /*
   2.8 Loop Detection:
@@ -303,8 +309,8 @@ function palindromeCheck(node) {
 
 */
 function loopDetector(linkedlist) {
-  let slowPointer = linkedlist.next,
-    fastPointer = linkedlist.next.next;
+  let slowPointer = linkedlist.next;
+  let fastPointer = linkedlist.next.next;
 
   while (slowPointer !== fastPointer) {
     slowPointer = slowPointer.next;
