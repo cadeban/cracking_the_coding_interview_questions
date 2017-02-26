@@ -117,11 +117,196 @@ class BlackJackHand extends Hand {
   employees: respondent, manager, and director. An incoming telephone call must
   be first allocated to a respondent who is free. If the respondent can't handle
   the call, he or she must escalate the call to a manager. If the manager is not
-  free or not able to ahndle it, then the call should be escalated to a director.
+  free or not able to handle it, then the call should be escalated to a director.
   Design the classes and data structures for this problem. Implement a method
   dispatchCall() which assigns a call to the first available employee.
  */
 
+class Employee {
+  constructor() {
+    this.available = true; // TODO: make a getter function
+    this.permissions = {};
+    this.currentCall = null;
+  }
+
+  handleCall(call) {
+    this.setCall(call);
+    this.toggleAvailalbility(); // could clean up by removing availability
+    this.checkPermissions();
+    this.toggleAvailalbility(); // could clean up by removing availability
+    this.setCall();
+    return call.isResolved;
+  }
+
+  checkPermissions(call) {
+    if (this.permissions[call.permissions]) {
+      call.resolve();
+    } else {
+      call.escalate();
+    }
+  }
+
+  toggleAvailalbility() {
+    this.available = !this.available;
+  }
+
+  setCall(call) {
+    const newCurrentCall = call || null;
+    this.currentCall = newCurrentCall;
+  }
+
+  acceptCall(call) {
+    this.handleCall(call);
+  }
+}
+
+class Respondent extends Employee {
+  super() {
+    this.permissions = {};
+  }
+}
+
+class Manager extends Respondent {
+  super() {
+    this.permissions = {};
+  }
+}
+
+class Director extends Manager {
+  super() {
+    this.permissions = {};
+  }
+}
+
+class EmployeeList {
+  constructor(n) {
+    this.Rank = null;
+    this.list = [];
+    for (let i = 0; i < n; i += 1) {
+      this.list.push(new this.Rank());
+    }
+  }
+
+  findFirstAvailable() {
+    let availableEmployee = null;
+    availableEmployee = this.list.find((employee) => {
+      return employee.available;
+    });
+    return availableEmployee;
+  }
+}
+
+class RespondentList extends EmployeeList {
+  super() {
+    this.rank = 'Respondent';
+  }
+}
+class ManagerList extends EmployeeList {
+  super() {
+    this.rank = 'Manager';
+  }
+}
+class DirectorList extends EmployeeList {
+  super() {
+    this.rank = 'Director';
+  }
+}
+
+class Call {
+  constructor(permissions, caller) {
+    this.caller = caller;
+    this.handler = null;
+    this.permissions = permissions;
+    this.escalated = 0;
+    this.resolved = false;
+  }
+
+  escalate() {
+    this.escalated += 1;
+  }
+
+  resolve() {
+    this.resolved = true;
+  }
+
+  isResolved() {
+    return this.resolved;
+  }
+
+  isEscalated() {
+    return this.escalated;
+  }
+
+  setHandler(employee) {
+    const handler = employee || null;
+    this.handler = handler;
+  }
+}
+
+class CallQueue {
+  constructor() {
+    this.queue = [];
+    this.queueHead = 0;
+  }
+
+  enqueueCall(call) {
+    this.queue.push(call);
+  }
+
+  dequeueCall() {
+    const call = this.queue[this.queueHead];
+    this.queueHead += 1;
+    return call;
+  }
+}
+
+class CallCenter {
+  constructor() {
+    // this.employees = [new RespondentList(), new ManagerList(), new DirectorList()];
+    this.employees = {
+      respondents: new RespondentList(),
+      managers: new ManagerList(),
+      directors: new DirectorList(),
+    };
+
+    this.callQueue = [new CallQueue(), new CallQueue(), new CallQueue()]; // 0 = Respondent, 1 = Manager, 2 = Director
+  }
+
+  getCall(i) { // i === callQueue index
+    return this.callQueue[i].dequeueCall();
+  }
+
+  // dispatchCall(call) {
+  //   const callToHandle = call || this.getCall();
+  //   for (let i = 0; i < this.employees.length; i += 1) {
+  //     const firstAvailableEmp = this.employees[i].findFirstAvailable();
+  //     if (firstAvailableEmp !== null) {
+  //       call.setHandler(firstAvailableEmp);
+  //       if (firstAvailableEmp.handleCall(callToHandle)) {
+  //         return;
+  //       }
+  //       call.setHandler();
+  //     }
+  //   }
+  // }
+
+  dispatchCall(caller) {
+    const call = new Call(caller);
+    const employee = getHandlerForCall(call);
+    if (employee !== null) {
+      call.setHandler(employee);
+      employee.acceptCall(call);
+    } else {
+      this.callQueue[call.escalated].push(call);
+    }
+  }
+
+  addtoCallQueue(call) {
+    this.callQueue[call.isEscalated].enqueueCall(call);
+  }
+
+  getHandlerForCall() { /* ... */ }
+}
 
 /*
   7.3 Jukebox
