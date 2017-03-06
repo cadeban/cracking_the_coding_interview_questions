@@ -313,6 +313,158 @@ class CallCenter {
   Design a musical jukebox using object-oriented principles.
  */
 
+class Song {
+  constructor(title, artist, time, genre) {
+    this.title = title;
+    this.artist = artist;
+    this.time = time;
+    this.genre = genre;
+  }
+
+  play() {/*...*/}
+  pause() {/*...*/}
+}
+
+class Collection {
+  constructor() {
+    this.collection = [];
+    this.currentPointer = 0;
+  }
+
+  isEmpty() {
+    return this.collection.length - this.collection.currentPointer > 0;
+  }
+
+  incrementPointer() {
+    this.currentPointer += 1;
+  }
+
+  decrementPointer() {
+    this.currentPointer -= 1;
+  }
+
+  getPointer() {
+    return this.currentPointer;
+  }
+
+  enqueue(){/*...*/}
+  dequeue(){/*...*/}
+}
+
+class Library extends Collection {
+  super() {}
+
+/* Needs to be handled by event handler */
+  addToCollection(songObj) {
+    this.collection.enqueue(new Song(songObj));
+  }
+}
+
+class SongQueue extends Collection {
+  super() {
+    this.currentPointer = 0;
+  }
+
+  isEmpty() {
+    return this.collection.isEmpty();
+  }
+
+/* Needs to be handled by event handlers */
+
+  addToPlaylist(song) {
+    this.collection.enqueue(song);
+  }
+
+  next() {
+    if (!this.collection.isEmpty()) {
+      const temp = this.collection[this.collection.currentPointer];
+      this.collection.incrementPointer;
+      return temp;
+    }
+    // else error?
+  }
+
+  prev() {
+    if (this.collection.currentPointer !== 0) {
+      const temp = this.collection[this.currentPointer - 1];
+      if (temp !== null) {
+        this.currentPointer -= 1;
+        return temp;
+      }
+    }
+    // else error?
+  }
+
+  dequeue(song) {
+    const index = this.collection.findIndex(song);
+    this.collection[index] = null;
+  }
+}
+
+class Player {
+  constructor() {
+    this.currentSong = null;
+    this.playing = false;
+  }
+
+  setCurrentSong(song) {
+    this.currentSong = song;
+  }
+
+  getCurrentSong() {
+    return this.currentSong;
+  }
+
+  next() {
+    const songQueue = JukeBox.getSongQueue(); // this doesn't seem right...
+    if (!songQueue.isEmpty()) {
+      this.setCurrentSong(songQueue.next());
+    }
+    // otherwise do something else
+  }
+
+  prev() {
+    const songQueue = JukeBox.getSongQueue(); // this doesn't seem right...
+    if (!songQueue.isEmpty()) {
+      this.setCurrentSong(songQueue.prev());
+    }
+  }
+
+  play() {
+    this.currentSong.play();
+  }
+
+  pause() {
+    this.currentSong.pause();
+  }
+
+  toggle() {
+    if (this.playing === false) {
+      this.play();
+      this.playing = true;
+    } else {
+      this.pause();
+      this.playing = false;
+    }
+  }
+
+}
+
+class JukeBox {
+  constructor() {
+    this.library = new Library();
+    this.songQueue = new SongQueue();
+    this.player = new Player();
+  }
+
+  getSongQueue() {
+    return this.songQueue;
+  }
+
+  getLibrary() {
+    return this.library();
+  }
+}
 
 /*
   7.4 Parking Lot
